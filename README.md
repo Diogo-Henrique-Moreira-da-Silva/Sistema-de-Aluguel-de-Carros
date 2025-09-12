@@ -4,8 +4,8 @@
 <img width="858" height="779" alt="image" src="https://github.com/user-attachments/assets/cb6782b1-58d8-407e-a852-a96506c426e2" />
 
 ## Diagrama de Pacotes
-<img width="1666" height="854" alt="image" src="https://github.com/user-attachments/assets/0fc5e652-c158-49a6-98e8-d3a56af96ab8" />
-![Diagrama de Pacotes](https://github.com/user-attachments/assets/340605c3-ee4a-4466-b2e1-9d73e0bd83ac)
+<img width="1666" height="854" alt="image" src="https://github.com/user-attachments/assets/340605c3-ee4a-4466-b2e1-9d73e0bd83ac">
+
 
 
 
