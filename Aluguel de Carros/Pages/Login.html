@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="../Styles/Login.css">
+    <title>Document</title>
+</head>
+<body>
+
+    <header>
+        <h2 class="logo"> logo </h2>
+        <nav class="navigation">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Services</a>
+            <a href="#">Contact</a>
+            <button class="btnLogin-popup">Login</button>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+        <span class="icon-close">
+            <ion-icon name="close"></ion-icon>
+        </span>
+        
+        <div class="form-box login">
+            <h2>Entrar</h2>
+            <form action="#">
+                <div class="input-box">
+                    <span class="icon">
+                        <ion-icon name="mail"></ion-icon>
+                    </span>
+                    <input type="email" required>
+                    <label>Email</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon">
+                        <ion-icon name="lock-closed"></ion-icon>
+                    </span>
+                    <input type="password" required>
+                    <label>Senha</label>
+                </div>
+                <div class="remember-forgot">
+                    <label><input type="checkbox">Lembrar de mim</label>
+                    <a href="#">Esqueci minha senha</a>
+                </div>
+                <button type="submit" class="btn">Entrar</button>
+                <div class="login-register">
+                    <p>Não tem uma conta? <a href="#" class="register-link">Cadastrar</a></p>
+                </div>
+            </form>
+        </div>
+
+
+
+    <div class="form-box register">
+        <h2>Cadastro</h2>
+        <form action="#">
+                <div class="input-box">
+                    <span class="icon">
+                        <ion-icon name="id-card-outline"></ion-icon>
+                    </span>
+                    <input type="text" name="rg" required>
+                    <label>RG</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon">
+                        <ion-icon name="document-text-outline"></ion-icon>
+                    </span>
+                    <input type="text" name="cpf" required>
+                    <label>CPF</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon">
+                        <ion-icon name="person-outline"></ion-icon>
+                    </span>
+                    <input type="text" name="nome" required>
+                    <label>Nome</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon">
+                        <ion-icon name="home-outline"></ion-icon>
+                    </span>
+                    <input type="text" name="endereco" required>
+                    <label>Endereço</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon">
+                        <ion-icon name="briefcase-outline"></ion-icon>
+                    </span>
+                    <input type="text" name="profissao" required>
+                    <label>Profissão</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon">
+                        <ion-icon name="business-outline"></ion-icon>
+                    </span>
+                    <input type="text" name="entidadeEmpregadora">
+                    <label>Entidade Empregadora</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon">
+                        <ion-icon name="cash-outline"></ion-icon>
+                    </span>
+                    <input type="number" name="rendimentos" step="0.01">
+                    <label>Rendimentos Auferidos</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon">
+                        <ion-icon name="mail"></ion-icon>
+                    </span>
+                    <input type="email" name="email" required>
+                    <label>Email</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon">
+                        <ion-icon name="lock-closed"></ion-icon>
+                    </span>
+                    <input type="password" name="senha" required>
+                    <label>Senha</label>
+                </div>
+                
+                <div class="remember-forgot">
+                    <label><input type="checkbox" required> Aceito os Termos e Condições</label>
+                </div>
+                <button type="submit" class="btn">Cadastrar</button>
+                <div class="login-register">
+                    <p>Já tem uma conta? <a href="#" class="login-link">Entrar</a></p>
+                </div>
+        </form>
+    </div>
+
+    </div>
+    <script src="../Scripts/Login.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

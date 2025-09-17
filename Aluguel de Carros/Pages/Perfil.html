@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meu Perfil</title>
+  <link rel="stylesheet" href="../Styles/Perfil.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+<body>
+  <header>
+    <h2 class="logo">logo</h2>
+    <nav class="navigation">
+      <a href="#">Home</a>
+      <a href="#">About</a>
+      <a href="#">Services</a>
+      <a href="#">Contact</a>
+      <button class="btnLogin-popup" onclick="location.href='index.html'">Sair</button>
+    </nav>
+  </header>
+
+  <main class="page">
+    <section class="profile-wrapper" id="card">
+      <button class="icon-close" id="btnClose" title="Fechar">
+        <ion-icon name="close"></ion-icon>
+      </button>
+
+      <div class="profile-head">
+        <div class="title">
+          <ion-icon name="person-circle-outline" class="avatar"></ion-icon>
+          <div>
+            <h1 id="titleNome">Meu Perfil</h1>
+            <p class="muted" id="subtitleEmail">Carregando…</p>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn" id="btnEditar"><ion-icon name="create-outline"></ion-icon>&nbsp;Editar</button>
+          <button class="btn" id="btnSalvar" style="display:none"><ion-icon name="save-outline"></ion-icon>&nbsp;Salvar</button>
+          <button class="btn outline" id="btnCancelar" style="display:none">Cancelar</button>
+          <button class="btn danger" id="btnExcluir"><ion-icon name="trash-outline"></ion-icon>&nbsp;Excluir conta</button>
+        </div>
+      </div>
+
+      <form class="profile-body" id="form" onsubmit="return false;">
+        <div class="field">
+          <label for="rg">RG</label>
+          <div class="input readonly">
+            <ion-icon name="id-card-outline"></ion-icon>
+            <input id="rg" placeholder="00.000.000-0" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="cpf">CPF</label>
+          <div class="input readonly">
+            <ion-icon name="document-text-outline"></ion-icon>
+            <input id="cpf" placeholder="000.000.000-00" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="nome">Nome</label>
+          <div class="input readonly">
+            <ion-icon name="person-outline"></ion-icon>
+            <input id="nome" placeholder="Seu nome" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="endereco">Endereço</label>
+          <div class="input readonly">
+            <ion-icon name="home-outline"></ion-icon>
+            <input id="endereco" placeholder="Rua, número, bairro" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="profissao">Profissão</label>
+          <div class="input readonly">
+            <ion-icon name="briefcase-outline"></ion-icon>
+            <input id="profissao" placeholder="Ex.: Analista" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="entidadeEmpregadora">Entidade Empregadora</label>
+          <div class="input readonly">
+            <ion-icon name="business-outline"></ion-icon>
+            <input id="entidadeEmpregadora" placeholder="Empresa" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="rendimentos">Rendimentos (R$)</label>
+          <div class="input readonly">
+            <ion-icon name="cash-outline"></ion-icon>
+            <input id="rendimentos" inputmode="numeric" placeholder="0,00" />
+          </div>
+        </div>
+        <div class="field row-2">
+          <label for="email">Email</label>
+          <div class="input readonly">
+            <ion-icon name="mail-outline"></ion-icon>
+            <input id="email" type="email" placeholder="voce@email.com" />
+          </div>
+        </div>
+        <div class="field row-2">
+          <label for="senha">Senha (deixe em branco para não alterar)</label>
+          <div class="input readonly">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            <input id="senha" type="password" placeholder="********" />
+          </div>
+        </div>
+      </form>
+
+      <div class="toolbar">
+        <div class="left">
+          <span class="pill" id="statusPill"><ion-icon name="cloud-download-outline"></ion-icon>&nbsp;<span>Sincronizando…</span></span>
+          <span class="muted">Última atualização: <span id="lastUpdate">—</span></span>
+        </div>
+        <div class="right">
+          <span class="badge" id="idBadge">ID: —</span>
+        </div>''
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast">
+    <ion-icon name="information-circle-outline"></ion-icon>
+    <span id="toastMsg">Mensagem</span>
+  </div>
+
+  <dialog id="confirmDelete">
+    <div class="confirm">
+      <h3><ion-icon name="alert-circle-outline"></ion-icon> Excluir conta</h3>
+      <p>Tem certeza de que deseja <b>excluir permanentemente</b> seu cadastro? Essa ação não pode ser desfeita.</p>
+      <div class="buttons">
+        <button class="btn outline" id="cancelDel">Cancelar</button>
+        <button class="btn danger" id="okDel">Excluir</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="../Scripts/Perfil.js"></script>
+</body>
+</html>
