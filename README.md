@@ -6,6 +6,9 @@
 ## Diagrama de Pacotes
 <img width="1666" height="854" alt="image" src="https://github.com/user-attachments/assets/340605c3-ee4a-4466-b2e1-9d73e0bd83ac">
 
+## Diagrama de Componentes
+<img width="1199" height="884" alt="image" src="https://github.com/user-attachments/assets/c477a627-54c3-4881-aa16-b666a8d4224b" />
+
 
 
 
