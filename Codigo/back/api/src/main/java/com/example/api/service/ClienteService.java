@@ -24,8 +24,8 @@ public class ClienteService {
         cliente.setEmail(dto.getEmail());
         cliente.setCpf(dto.getCpf());
         cliente.setRg(dto.getRg());
-        cliente.setEndereco(dto.getEndereco());  // 🔥 novo
-        cliente.setProfissao(dto.getProfissao()); // 🔥 novo
+        cliente.setEndereco(dto.getEndereco());  
+        cliente.setProfissao(dto.getProfissao()); 
         cliente.setEmpregador(dto.getEmpregador());
         cliente.setRendimento(dto.getRendimento());
         cliente.setSenha(dto.getSenha());
