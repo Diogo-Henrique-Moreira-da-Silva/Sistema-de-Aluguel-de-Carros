@@ -9,6 +9,10 @@
 ## Diagrama de Componentes
 <img width="1199" height="884" alt="image" src="https://github.com/user-attachments/assets/c477a627-54c3-4881-aa16-b666a8d4224b" />
 
+## Diagrama de Implantação
+<img width="489" height="298" alt="Diagrama de Implantação" src="https://github.com/user-attachments/assets/312bf833-673a-4664-bc26-83b596edc503" />
+
+
 
 
 
