@@ -63,6 +63,6 @@ public class CarroFotoController {
     return ResponseEntity.noContent().build();
   }
 
-  // DTO de metadados para resposta
+  // DTO de metadados para respostaa
   record FotoMeta(Long id, String filename, String contentType, long size, boolean capa) {}
 }
