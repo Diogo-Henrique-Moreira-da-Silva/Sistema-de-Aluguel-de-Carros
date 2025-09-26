@@ -1,5 +1,7 @@
 package com.example.api.DTO;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 

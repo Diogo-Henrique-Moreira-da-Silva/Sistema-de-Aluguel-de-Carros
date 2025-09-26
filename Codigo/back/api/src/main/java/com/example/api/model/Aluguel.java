@@ -31,7 +31,7 @@ public class Aluguel {
 
     private Integer dias;
 
-    private BigDecimal valor;
+    private double valor;
 
     @ManyToOne (fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "carro_id", nullable = false, foreignKey = @ForeignKey(name = "fk_aluguel_carro"))

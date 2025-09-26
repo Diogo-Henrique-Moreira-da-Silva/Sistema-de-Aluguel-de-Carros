@@ -38,6 +38,7 @@ public class AluguelService {
         solicitacao.setDias(dto.getDias());
         solicitacao.setLocatario(locatario);
         solicitacao.setStatus("EM ABERTO");
+        solicitacao.setValor(carro.getDiaria() * dto.getDias());
 
         return aluguelRepository.save(solicitacao);
     }
