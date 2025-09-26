@@ -1,7 +1,5 @@
-const API_URL = "http://localhost:8080/clientes"; // Ajuste se o backend estiver hospedado em outro lugar
-const userId = localStorage.getItem("userId"); // precisa estar salvo no login
-
-// Referências aos elementos
+const API_URL = "http://localhost:8080/clientes";
+const userId = localStorage.getItem("userId");
 const form = document.getElementById("form");
 const inputs = form.querySelectorAll("input");
 const btnEditar = document.getElementById("btnEditar");
@@ -15,14 +13,12 @@ const titleNome = document.getElementById("titleNome");
 const subtitleEmail = document.getElementById("subtitleEmail");
 const idBadge = document.getElementById("idBadge");
 
-// 🔄 Carrega os dados ao abrir
 async function carregarPerfil() {
   try {
     const res = await fetch(`${API_URL}/${userId}`);
     if (!res.ok) throw new Error("Erro ao buscar perfil");
     const data = await res.json();
 
-    // Preenche os campos
     document.getElementById("rg").value = data.rg || "";
     document.getElementById("cpf").value = data.cpf || "";
     document.getElementById("nome").value = data.nome || "";
@@ -33,7 +29,6 @@ async function carregarPerfil() {
     document.getElementById("email").value = data.email || "";
     document.getElementById("senha").value = "";
 
-    // Cabeçalho
     titleNome.textContent = data.nome;
     subtitleEmail.textContent = data.email;
     idBadge.textContent = `ID: ${data.id}`;
@@ -44,7 +39,6 @@ async function carregarPerfil() {
   }
 }
 
-// ✏️ Habilita edição
 btnEditar.addEventListener("click", () => {
   inputs.forEach(i => i.removeAttribute("readonly"));
   btnEditar.style.display = "none";
@@ -52,7 +46,6 @@ btnEditar.addEventListener("click", () => {
   btnCancelar.style.display = "inline-block";
 });
 
-// ❌ Cancelar edição
 btnCancelar.addEventListener("click", () => {
   inputs.forEach(i => i.setAttribute("readonly", true));
   btnEditar.style.display = "inline-block";
@@ -61,7 +54,6 @@ btnCancelar.addEventListener("click", () => {
   carregarPerfil();
 });
 
-// 💾 Salvar alterações
 btnSalvar.addEventListener("click", async () => {
   const clienteAtualizado = {
     rg: document.getElementById("rg").value,
@@ -92,7 +84,6 @@ btnSalvar.addEventListener("click", async () => {
   }
 });
 
-// 🗑 Excluir conta
 btnExcluir.addEventListener("click", async () => {
   if (!confirm("Tem certeza que deseja excluir sua conta? Esta ação é irreversível.")) return;
   try {
@@ -109,12 +100,9 @@ btnExcluir.addEventListener("click", async () => {
   }
 });
 
-// Função para mostrar mensagens de feedback
 function mostrarToast(msg) {
   toastMsg.textContent = msg;
   toast.classList.add("show");
   setTimeout(() => toast.classList.remove("show"), 3000);
 }
-
-// Carregar ao abrir
 carregarPerfil();
