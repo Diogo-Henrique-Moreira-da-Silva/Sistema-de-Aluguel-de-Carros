@@ -31,6 +31,9 @@ public abstract class Agentes {
     @Column(unique=true)
     private String cnpj;
 
+    
+    private String endereco;
+
     @Email
     @NotBlank(message = "E-mail é obrigatório")
     @Column(unique = true)

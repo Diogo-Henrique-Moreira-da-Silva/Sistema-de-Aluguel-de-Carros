@@ -30,6 +30,7 @@ public class BancoService {
     banco.setEmail(dto.getEmail());
     banco.setCnpj(dto.getCnpj());
     banco.setCompe(dto.getCompe());
+    banco.setEndereco(dto.getEndereco());
     banco.setSenha(dto.getSenha());
 
     return agentesRepository.save(banco);

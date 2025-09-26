@@ -29,6 +29,7 @@ public class EmpresaService {
     empresa.setNome(dto.getNome());
     empresa.setEmail(dto.getEmail());
     empresa.setCnpj(dto.getCnpj());
+    empresa.setEndereco(dto.getEndereco());
     empresa.setSenha(dto.getSenha());
 
     return agentesRepository.save(empresa);

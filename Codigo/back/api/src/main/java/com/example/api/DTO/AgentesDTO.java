@@ -11,4 +11,6 @@ public class AgentesDTO{
     private String email;
     private String cnpj;
     private String senha;
+    private String endereco;
+
 }
