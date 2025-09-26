@@ -24,10 +24,8 @@ public class Cliente {
     @NotBlank(message = "nome é obrigatório")
     private String nome;
 
-    // 🔥 NOVO CAMPO
     private String endereco;
 
-    // 🔥 NOVO CAMPO
     private String profissao;
 
     @Email
