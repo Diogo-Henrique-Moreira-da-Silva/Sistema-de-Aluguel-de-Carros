@@ -29,7 +29,7 @@ public class Aluguel {
 
     private OffsetDateTime inicio;
 
-    private OffsetDateTime encerramento;
+    private Integer dias;
 
     private BigDecimal valor;
 

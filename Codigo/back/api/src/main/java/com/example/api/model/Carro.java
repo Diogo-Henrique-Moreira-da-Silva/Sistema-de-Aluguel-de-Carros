@@ -1,13 +1,14 @@
 package com.example.api.model;
 
-import java.time.OffsetDateTime;
-
-import jakarta.annotation.Generated;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,10 +32,12 @@ public class Carro{
 
     private String status;
 
-    private String proprietario;
-
     private String locatario;
 
     private double diaria;
+
+    @ManyToOne (fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="agente_id", nullable = false, foreignKey = @ForeignKey(name = "fk_aluguel_proprietario"))
+    private Agentes proprietario;
 
 }

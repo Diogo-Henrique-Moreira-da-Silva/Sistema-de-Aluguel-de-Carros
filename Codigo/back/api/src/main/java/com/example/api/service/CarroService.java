@@ -1,12 +1,13 @@
 package com.example.api.service;
 
-import java.time.OffsetDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.api.DTO.CarroDTO;
+import com.example.api.model.Agentes;
 import com.example.api.model.Carro;
+import com.example.api.repository.AgentesRepository;
 import com.example.api.repository.CarroRepository;
 
 @Service
@@ -14,19 +15,23 @@ public class CarroService {
     
     @Autowired
     private CarroRepository carroRepository;
+    @Autowired
+    private AgentesRepository agentesRepository;
 
     public Carro cadastrarCarro(CarroDTO dto){
         if(carroRepository.existsByPlaca(dto.getPlaca())){
             throw new RuntimeException("Já existe um carro com esta placa.");
         }
+        Agentes proprietario = agentesRepository.findById(dto.getProprietarioId())
+            .orElseThrow(() -> new RuntimeException("Proprietário não encontrado"));
 
         Carro carro = new Carro();
         carro.setModelo(dto.getModelo());
         carro.setPlaca(dto.getPlaca());
         carro.setFabricante(dto.getFabricante());
-        carro.setProprietario(dto.getProprietario());
         carro.setDiaria(dto.getDiaria());
         carro.setStatus("Disponivel");
+        carro.setProprietario(proprietario); 
 
         return carroRepository.save(carro);
     }

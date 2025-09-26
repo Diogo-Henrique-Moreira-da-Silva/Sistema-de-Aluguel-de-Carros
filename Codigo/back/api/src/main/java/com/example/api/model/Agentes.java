@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,6 +30,11 @@ public abstract class Agentes {
 
     @Column(unique=true)
     private String cnpj;
+
+    @Email
+    @NotBlank(message = "E-mail é obrigatório")
+    @Column(unique = true)
+    private String email;
 
     private String senha;
 }

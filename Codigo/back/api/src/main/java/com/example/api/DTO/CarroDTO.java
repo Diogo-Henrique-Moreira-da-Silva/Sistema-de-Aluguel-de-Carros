@@ -10,7 +10,7 @@ public class CarroDTO {
     private String modelo;
     private String fabricante;
     private String status;
-    private String proprietario;
     private String locatario;
     private double diaria;
+    private long proprietarioId;
 }

@@ -33,7 +33,7 @@ public class CarroController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{placa}")
     public ResponseEntity<?> excluir(@PathVariable String placa){
         try{
             carroService.excluirCarro(placa);
