@@ -1,0 +1,215 @@
+:root{
+  --bg: #0b1116;
+  --fg: #eaf2f9;
+  --muted:#9fb3c8;
+  --surface:#0f1d27;
+  --surface-2:#000000;
+  --radius: 16px;
+  --shadow: 0 20px 40px rgba(0,0,0,.35);
+}
+
+header {
+    position: static;
+    top: 0;
+    left: 0;
+    width: 90%;
+    padding: 20px 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 99;
+}
+
+.logo {
+    font-size: 2em;
+    color: #fff;
+    user-select: none;
+}
+
+.navigation a {
+    position: relative;
+    font-size: 1.1em;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 40px;
+}
+
+.navigation a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 100%;
+    height: 3px;
+    background: #fff;
+    border-radius: 5px;
+    transform-origin: right;
+    transform: scaleX(0);
+    transition: transform 0.5s;
+}
+
+.navigation a:hover::after{
+    transform-origin: left;
+    transform: scaleX(1);
+}
+
+.navigation .btnLogin-popup {
+    width: 130px;
+    height: 50px;
+    background: transparent;
+    border: 2px solid #fff;
+    outline:none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #fff;
+    font-weight: 500;
+    margin-left: 40px;
+    transition: .5s;
+}
+
+.navigation .btnLogin-popup:hover {
+    background: #fff;
+    color: #162938;
+}
+
+/* Página */
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, "Noto Sans";
+  background: #000000;
+}
+.wrap{
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px 60px;
+}
+h1{
+  font-weight: 700;
+  letter-spacing: .3px;
+  margin: 0 0 20px;
+  color: #fff;
+}
+.lead{
+  margin: 0 0 28px;
+  color: var(--muted);
+}
+
+/* Grid */
+.grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 680px){
+  .grid{ grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px){
+  .grid{ grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Card */
+.card{
+  border: .5px solid #ffffff;
+  border-radius: 2px;
+  overflow: clip;
+  position: relative;
+  border-radius: var(--radius);
+  background-color: #000000;
+  box-shadow: var(--shadow);
+  overflow: clip;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform .25s ease, box-shadow .25s ease;
+  will-change: transform;
+}
+.card:hover{ transform: translateY(-2px); }
+
+/* brilho que segue o mouse */
+.glow{
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .18s ease;
+  border-radius: inherit;
+}
+
+/* conteúdo do card “saltando” no eixo Z */
+.card-content{
+  position: relative;
+  z-index: 1;
+  padding: 16px;
+  transform-style: preserve-3d;
+  display: grid;
+  gap: 14px;
+}
+
+.thumb{
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius: 12px;
+  background:#000000;
+}
+
+.title{
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 2px 0 0;
+  color:#fff;
+}
+
+/* Lista de especificações (Ano, Modelo, Nome) */
+.specs{
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+.specs > div{
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+.specs dt{
+  color: var(--muted);
+  font-weight: 600;
+}
+.specs dd{
+  margin: 0;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.cta{
+  margin-top: 6px;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  background: #ffffff;
+  color: #000000;
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: transform .12s ease, opacity .12s ease;
+  will-change: transform;
+}
+.cta:hover{ transform: scale(1.02); }
+.cta:active{ transform: scale(.98); }
+
+/* Acessibilidade: foco visível */
+.card:focus-visible{
+  outline: 3px solid #9ad1ff;
+  outline-offset: 3px;
+}
+
+/* Reduzir animações: desliga tilt e glow */
+@media (prefers-reduced-motion: reduce){
+  .card, .glow, .cta{ transition: none !important; }
+}
