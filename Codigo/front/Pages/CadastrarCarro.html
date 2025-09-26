@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>Cadastrar Carros</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../Styles/CadastrarCarro.css">
+</head>
+<body>
+  <header class="site-header">
+    <h2 class="logo">logo</h2>
+    <nav class="navigation">
+      <a href="#">Início</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <h1>Cadastrar Carros</h1>
+
+    <section id="cards" class="grid"></section>
+  </main>
+
+  <button class="fab" id="btnAdd" aria-label="Cadastrar novo carro">+</button>
+
+  <div class="overlay" id="overlay" hidden></div>
+  <dialog class="modal" id="carModal" aria-labelledby="carModalTitle">
+    <form id="carForm" method="dialog">
+      <header class="modal-header">
+        <h2 id="carModalTitle">Novo Carro</h2>
+        <button type="button" class="close" id="btnClose" aria-label="Fechar">×</button>
+      </header>
+
+      <div class="fields">
+        <label>
+          <span>Modelo</span>
+          <input name="modelo" required placeholder="Ex.: Corolla Altis">
+        </label>
+
+        <label>
+          <span>Placa</span>
+          <input name="placa" required placeholder="Ex.: ABC-1D23" maxlength="8">
+        </label>
+
+        <label>
+          <span>Fabricante</span>
+          <input name="fabricante" required placeholder="Ex.: Toyota">
+        </label>
+
+        <label>
+          <span>Proprietário</span>
+          <input name="proprietario" required placeholder="Ex.: João Silva">
+        </label>
+
+        <label>
+          <span>Imagem (URL)</span>
+          <input name="imagemUrl" type="url" placeholder="https://...">
+        </label>
+      </div>
+
+      <footer class="modal-actions">
+        <button type="button" class="btn ghost" id="btnCancel">Cancelar</button>
+        <button type="submit" class="btn">Salvar</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <script src="../Scripts/CadastrarCarro.js" defer></script>
+</body>
+</html>
