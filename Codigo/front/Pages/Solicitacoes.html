@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>Solicitações de Aluguel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../Styles/Solicitacoes.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h2 class="logo">logo</h2>
+    <nav class="navigation" aria-label="Navegação principal">
+      <a href="../Pages/CadastrarCarro.html">Carros</a>
+      <a href="../Pages/Catálogo.html">Catálogo</a>
+      <a href="../Pages/Login.html">Sair</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <h1>Solicitações pendentes</h1>
+    <p id="owner-info" class="lead" aria-live="polite"></p>
+
+    <div class="card table-card">
+      <table class="table">
+        <caption class="muted" style="text-align:left">
+          Pedidos de aluguel aguardando decisão do agente/empresa.
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Carro</th>
+            <th scope="col">Placa</th>
+            <th scope="col">Locatário</th>
+            <th scope="col">Período</th>
+            <th scope="col">Valor</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="7" class="muted">Carregando…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <template id="row-tpl">
+    <tr data-id="">
+      <td class="col-idx"></td>
+      <td class="col-carro">
+        <div class="carro-modelo"></div>
+        <small class="carro-fabricante muted"></small>
+      </td>
+      <td class="col-placa"></td>
+      <td class="col-cliente"></td>
+      <td class="col-periodo">
+        <div><span class="inicio"></span> → <span class="fim"></span></div>
+        <small class="dias muted"></small>
+      </td>
+      <td class="col-valor">
+        <div><strong class="total"></strong></div>
+        <small class="diaria muted"></small>
+      </td>
+      <td class="col-acoes">
+        <button type="button" class="btn-aceitar">Aceitar</button>
+        <button type="button" class="btn-recusar">Recusar</button>
+      </td>
+    </tr>
+  </template>
+
+  <noscript>
+    <p style="padding:16px" class="muted">
+      Ative o JavaScript para visualizar e decidir as solicitações.
+    </p>
+  </noscript>
+
+  <script src="../Scripts/Solicitacoes.js" defer></script>
+</body>
+</html>

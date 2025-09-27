@@ -16,11 +16,9 @@
   <header>
     <h2 class="logo">logo</h2>
     <nav class="navigation">
-      <a href="#">Home</a>
-      <a href="#">About</a>
-      <a href="#">Services</a>
-      <a href="#">Contact</a>
-      <button class="btnLogin-popup" onclick="location.href='index.html'">Sair</button>
+      <a href="../Pages/Login.html">Início</a>
+      <a href="../Pages/Catálogo.html">Alugar</a>
+      <button class="btnLogin-popup" id="btnLogout">Sair</button>
     </nav>
   </header>
 
@@ -49,65 +47,65 @@
       <form class="profile-body" id="form" onsubmit="return false;">
         <div class="field">
           <label for="rg">RG</label>
-          <div class="input readonly">
+          <div class="input">
             <ion-icon name="id-card-outline"></ion-icon>
-            <input id="rg" placeholder="00.000.000-0" />
+            <input id="rg" placeholder="00.000.000-0" disabled />
           </div>
         </div>
         <div class="field">
           <label for="cpf">CPF</label>
-          <div class="input readonly">
+          <div class="input">
             <ion-icon name="document-text-outline"></ion-icon>
-            <input id="cpf" placeholder="000.000.000-00" />
+            <input id="cpf" placeholder="000.000.000-00" disabled />
           </div>
         </div>
         <div class="field">
           <label for="nome">Nome</label>
-          <div class="input readonly">
+          <div class="input">
             <ion-icon name="person-outline"></ion-icon>
-            <input id="nome" placeholder="Seu nome" />
+            <input id="nome" placeholder="Seu nome" disabled />
           </div>
         </div>
         <div class="field">
           <label for="endereco">Endereço</label>
-          <div class="input readonly">
+          <div class="input">
             <ion-icon name="home-outline"></ion-icon>
-            <input id="endereco" placeholder="Rua, número, bairro" />
+            <input id="endereco" placeholder="Rua, número, bairro" disabled />
           </div>
         </div>
         <div class="field">
           <label for="profissao">Profissão</label>
-          <div class="input readonly">
+          <div class="input">
             <ion-icon name="briefcase-outline"></ion-icon>
-            <input id="profissao" placeholder="Ex.: Analista" />
+            <input id="profissao" placeholder="Ex.: Analista" disabled />
           </div>
         </div>
         <div class="field">
-          <label for="entidadeEmpregadora">Entidade Empregadora</label>
-          <div class="input readonly">
+          <label for="empregador">Empregador</label>
+          <div class="input">
             <ion-icon name="business-outline"></ion-icon>
-            <input id="entidadeEmpregadora" placeholder="Empresa" />
+            <input id="empregador" placeholder="Empresa" disabled />
           </div>
         </div>
         <div class="field">
-          <label for="rendimentos">Rendimentos (R$)</label>
-          <div class="input readonly">
+          <label for="rendimento">Rendimento (R$)</label>
+          <div class="input">
             <ion-icon name="cash-outline"></ion-icon>
-            <input id="rendimentos" inputmode="numeric" placeholder="0,00" />
+            <input id="rendimento" inputmode="decimal" placeholder="0,00" disabled />
           </div>
         </div>
         <div class="field row-2">
           <label for="email">Email</label>
-          <div class="input readonly">
+          <div class="input">
             <ion-icon name="mail-outline"></ion-icon>
-            <input id="email" type="email" placeholder="voce@email.com" />
+            <input id="email" type="email" placeholder="voce@email.com" disabled />
           </div>
         </div>
         <div class="field row-2">
           <label for="senha">Senha (deixe em branco para não alterar)</label>
-          <div class="input readonly">
+          <div class="input">
             <ion-icon name="lock-closed-outline"></ion-icon>
-            <input id="senha" type="password" placeholder="********" />
+            <input id="senha" type="password" placeholder="********" disabled />
           </div>
         </div>
       </form>
@@ -119,7 +117,7 @@
         </div>
         <div class="right">
           <span class="badge" id="idBadge">ID: —</span>
-        </div>''
+        </div>
       </div>
     </section>
   </main>
@@ -140,6 +138,6 @@
     </div>
   </dialog>
 
-  <script src="../Scripts/Perfil.js"></script>
+  <script src="../Scripts/Perfil.js" defer></script>
 </body>
 </html>

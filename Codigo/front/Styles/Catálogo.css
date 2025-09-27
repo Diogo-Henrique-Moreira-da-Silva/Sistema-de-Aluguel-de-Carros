@@ -137,7 +137,6 @@ h1{
   border-radius: inherit;
 }
 
-/* conteúdo do card “saltando” no eixo Z */
 .card-content{
   position: relative;
   z-index: 1;
@@ -203,13 +202,228 @@ h1{
 .cta:hover{ transform: scale(1.02); }
 .cta:active{ transform: scale(.98); }
 
-/* Acessibilidade: foco visível */
 .card:focus-visible{
   outline: 3px solid #9ad1ff;
   outline-offset: 3px;
 }
 
-/* Reduzir animações: desliga tilt e glow */
 @media (prefers-reduced-motion: reduce){
   .card, .glow, .cta{ transition: none !important; }
+}
+
+/* ===== Modal de aluguel ===== */
+:root{
+  --modal-w: 780px;
+  --radius: 22px;
+  --blur: 14px;
+  --bg: #0b0c10;
+  --card: #11131a;
+  --muted: #aeb2c4;
+  --text: #000000;
+  --brand: #6ea3ff;
+  --brand-2: #8b5cf6;
+  --ok: #34d399;
+  --danger: #ef4444;
+  --glass: rgba(255,255,255,0.06);
+  --stroke: rgba(255,255,255,0.12);
+  --shadow: 0 20px 80px rgba(0,0,0,.55);
+}
+
+/* overlay */
+.rent-overlay{
+  position: fixed; inset: 0;
+  background: radial-gradient(1200px 800px at 70% -10%, rgba(110,163,255,.25), transparent 40%),rgba(0,0,0,.65);
+  backdrop-filter: blur(2px);
+  z-index: 60;
+}
+
+/* modal container */
+.rent-modal{
+  position: fixed; inset: 0;
+  margin: auto;
+  width: min(100%, var(--modal-w));
+  max-height: 88vh;
+  background: linear-gradient(180deg, var(--glass), rgba(255,255,255,0.03));
+  backdrop-filter: blur(var(--blur));
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  overflow: hidden;
+  z-index: 70;
+  transform: translateY(8px) scale(.98);
+  opacity: 0;
+  transition: opacity .25s ease, transform .25s ease;
+}
+.rent-modal:not([hidden]){ opacity: 1; transform: translateY(0) scale(1); }
+
+/* X */
+.rent-close{
+  position: absolute; top: 10px; right: 12px;
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+  background: rgba(0,0,0,.35);
+  color: var(--text);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform .15s ease, background .2s ease, border-color .2s ease;
+}
+.rent-close:hover{ transform: scale(1.06); background: rgba(0,0,0,.5); border-color: #ffffff33; }
+
+/* hero/banner */
+.rent-hero{
+  position: relative;
+  height: 220px;
+  background: #111;
+  overflow: hidden;
+}
+.rent-hero img{
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover;
+  filter: saturate(1.05) contrast(1.05);
+  transform: scale(1.02);
+}
+.rent-hero-gradient{
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,.7) 100%),radial-gradient(800px 300px at 10% 0%, rgba(139,92,246,.25), transparent 60%);
+  pointer-events: none;
+}
+.rent-hero-title{
+  position: absolute; 
+  left: 20px; 
+  right: 20px; 
+  bottom: 16px;
+  display: flex; 
+  align-items: end; 
+  gap: 14px; 
+  justify-content: space-between;
+}
+.rent-hero-title h2{
+  margin: 0;
+  font-size: 22px; 
+  font-weight: 700; 
+  letter-spacing: .2px;
+  text-shadow: 0 2px 12px rgba(0,0,0,.65);
+}
+.rent-price-tag{
+  display: inline-flex; 
+  align-items: center; 
+  gap: 8px;
+  padding: 8px 12px;
+  background: linear-gradient(90deg, #21304a66, #231a4466);
+  border: 1px solid #ffffff22;
+  border-radius: 999px;
+  font-weight: 600; 
+  font-size: 14px;
+}
+
+/* body */
+.rent-body{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 22px;
+  padding: 18px 20px 20px;
+  background:
+    radial-gradient(900px 200px at 100% 0%, rgba(110,163,255,.12), transparent 60%),
+    radial-gradient(600px 240px at -10% 10%, rgba(139,92,246,.10), transparent 50%),
+    linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0) 30%);
+}
+
+/* fields */
+.rent-fields{
+  grid-column: 1 / -1;
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 16px 18px;
+}
+
+.rent-field{ display: grid; gap: 8px; }
+.rent-field span{ font-size: 13px; color: var(--muted); }
+.rent-field input{
+  height: 44px; 
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+  background: #afaeae;
+  color: var(--text);
+  padding: 0 12px;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.rent-field input:focus{
+  border-color: #7aa2ff80;
+  box-shadow: 0 0 0 4px #7aa2ff22;
+  background: #ffffff22;
+}
+
+.rent-summary{
+  grid-column: 1 / -1;
+  display: flex; 
+  gap: 12px; 
+  flex-wrap: wrap;
+}
+
+.sum-item{
+  flex: 1 1 160px;
+  min-width: 160px;
+  display: grid; 
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--stroke);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255,255,255,.02));
+}
+
+.sum-item span{ font-size: 12px; color: var(--muted); letter-spacing: .2px; }
+.sum-item strong{ font-size: 18px; }
+
+.rent-actions{
+  grid-column: 1 / -1;
+  margin-top: 6px;
+  display: flex; 
+  justify-content: flex-end; 
+  gap: 10px; 
+  flex-wrap: wrap;
+}
+
+.rent-btn{
+  appearance: none;
+  height: 44px; 
+  padding: 0 16px;
+  border-radius: 12px; 
+  border: 1px solid var(--stroke);
+  font-weight: 700; 
+  letter-spacing: .2px;
+  color: var(--text);
+  background: rgba(0,0,0,.35);
+  cursor: pointer;
+  transition: transform .12s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease, opacity .2s ease;
+}
+
+.rent-btn:hover{ transform: translateY(-1px); border-color: #ffffff33; background: rgba(0,0,0,.45); }
+.rent-btn:active{ transform: translateY(0); }
+
+.rent-btn.rent-cancel{
+  color: #ffe3e3;
+  border-color: #eee9e922;
+}
+
+.rent-btn.rent-confirm{
+  background: linear-gradient(90deg, #6ea3ff, #8b5cf6);
+  border: none;
+  box-shadow: 0 8px 26px rgba(110,163,255,.35), inset 0 0 0 1px #ffffff40;
+}
+
+.rent-btn.rent-confirm:disabled{
+  opacity: .6; cursor: not-allowed;
+  box-shadow: none; filter: grayscale(.2);
+}
+
+@media (max-width: 720px){
+  :root{ --modal-w: 94vw; }
+  .rent-body{ grid-template-columns: 1fr; }
+  .rent-fields{ grid-template-columns: 1fr; }
 }

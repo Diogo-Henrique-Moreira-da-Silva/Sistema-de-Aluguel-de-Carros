@@ -315,16 +315,28 @@ header {
 }
 
 .role-tabs{
-  display:flex; gap:8px; justify-content:center; margin:12px 0 10px;
+  display:flex; 
+  gap:8px; 
+  justify-content:center; 
+  margin:12px 0 10px;
 }
 .role-tab{
-  appearance:none; border:1px solid rgba(255,255,255,.4);
-  background:transparent; color:#fff; padding:6px 12px; border-radius:999px;
-  font-weight:600; cursor:pointer; transition:background .2s, color .2s, border-color .2s;
+  appearance:none;
+  border:1px solid rgba(255,255,255,.4);
+  background:transparent; 
+  color:#fff; 
+  padding:6px 12px;
+  border-radius:999px;
+  font-weight:600; 
+  cursor:pointer; 
+  transition:background .2s, color .2s, border-color .2s;
 }
+
 .role-tab:hover{ background:rgba(255,255,255,.12); }
 .role-tab.is-active{
-  background:#fff; color:#162938; border-color:#fff;
+  background:#fff; 
+  color:#162938; 
+  border-color:#fff;
 }
 
 .wrapper.active .role-tabs{ margin-top:4px; }

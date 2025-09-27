@@ -1,6 +1,3 @@
-// ========================
-// Modal (abrir/fechar)
-// ========================
 const wrapper      = document.querySelector('.wrapper');
 const overlay      = document.querySelector('.overlay');
 const loginLink    = document.querySelector('.login-link');
@@ -28,9 +25,6 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && wrapper?.classList.contains('active-popup')) closeModal();
 });
 
-// ========================
-// Abas (cliente/empresa/banco) — desabilita inputs das seções inativas
-// ========================
 function setSectionEnabled(section, enabled) {
   if (!section) return;
   section.hidden = !enabled;
@@ -73,14 +67,10 @@ function setupRoleTabs(scopeEl) {
 setupRoleTabs(document.querySelector('.form-box.login'));
 setupRoleTabs(document.querySelector('.form-box.register'));
 
-// ========================
-// API base URLs
-// ========================
 const API_CLIENTES = 'http://localhost:8080/clientes';
 const API_EMPRESAS = 'http://localhost:8080/agentes/empresa';
 const API_BANCOS   = 'http://localhost:8080/agentes/banco';
 
-// helper fetch
 async function postJson(url, body) {
   const resp = await fetch(url, {
     method: 'POST',
@@ -90,9 +80,6 @@ async function postJson(url, body) {
   return resp;
 }
 
-// ========================
-// LOGIN (cliente/empresa/banco)
-// ========================
 document.querySelector('.form-box.login form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -118,31 +105,30 @@ document.querySelector('.form-box.login form')?.addEventListener('submit', async
       alert(`Falha no login: ${resp.status} ${resp.statusText}\n${txt}`);
       return;
     }
+
     const usuario = await resp.json();
-    alert('Login realizado com sucesso!');
+
     localStorage.setItem('userId',   usuario.id);
     localStorage.setItem('userName', usuario.nome ?? '');
     localStorage.setItem('userRole', role);
 
+    alert('Login realizado com sucesso!');
     closeModal();
-    window.location.href = '/Pages/Home.html';
+
+    const target = (role === 'empresa') ? 'CadastrarCarro.html' : 'Login.html';
+    window.location.assign(target);
+
   } catch (err) {
     console.error('Erro de rede ao fazer login:', err);
     alert('Erro ao conectar com o servidor.');
   }
 });
-
-// ========================
-// CADASTRO (cliente/empresa/banco)
-// ========================
 document.querySelector('.form-box.register form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const form = e.target;
   const role = form.querySelector('.role-input')?.value || 'cliente';
-
-  // Como desabilitamos seções inativas, FormData pega só a ativa
-  const raw = Object.fromEntries(new FormData(form).entries());
+  const raw  = Object.fromEntries(new FormData(form).entries());
 
   let url, payload = {};
 
@@ -159,14 +145,11 @@ document.querySelector('.form-box.register form')?.addEventListener('submit', as
       rendimento: raw.rendimento ? Number(raw.rendimento) : 0,
       senha:      raw.senha ?? '',
     };
-    if (!payload.email || !payload.senha) {
-      alert('Email e senha são obrigatórios.');
-      return;
-    }
+    if (!payload.email || !payload.senha) { alert('Email e senha são obrigatórios.'); return; }
   }
 
   if (role === 'empresa') {
-    url = `${API_EMPRESAS}/cadastro`; // ajuste se seu controller usa minúsculo
+    url = `${API_EMPRESAS}/cadastro`;
     payload = {
       nome:     (raw.empresa_nome ?? '').trim(),
       email:    (raw.email ?? '').trim(),
@@ -181,16 +164,17 @@ document.querySelector('.form-box.register form')?.addEventListener('submit', as
   }
 
   if (role === 'banco') {
-    url = `${API_BANCOS}/cadastro`; // ajuste se seu controller usa minúsculo
+    url = `${API_BANCOS}/cadastro`;
     payload = {
       nome:     (raw.banco_nome ?? '').trim(),
       email:    (raw.email ?? '').trim(),
       cnpj:     (raw.banco_cnpj ?? '').trim(),
-      compe:    raw.banco_compe ? Number(raw.banco_compe) : null, // BancoDTO: long compe
+      compe:    raw.banco_compe ? Number(raw.banco_compe) : null,
       endereco: (raw.banco_endereco ?? '').trim(),
       senha:    raw.senha ?? '',
     };
-    if (!payload.nome || !payload.cnpj || !payload.email || !payload.senha || payload.compe == null || Number.isNaN(payload.compe)) {
+    if (!payload.nome || !payload.cnpj || !payload.email || !payload.senha ||
+        payload.compe == null || Number.isNaN(payload.compe)) {
       alert('Preencha nome, CNPJ, COMPE, email e senha.');
       return;
     }
@@ -203,9 +187,8 @@ document.querySelector('.form-box.register form')?.addEventListener('submit', as
       alert(`Erro ao cadastrar: ${resp.status} ${resp.statusText}\n${txt}`);
       return;
     }
-    // const result = await resp.json(); // se precisar
     alert('Cadastro realizado com sucesso! Agora você pode fazer login.');
-    wrapper?.classList.remove('active'); // volta para tela de login no modal
+    wrapper?.classList.remove('active');
   } catch (err) {
     console.error('Erro de rede ao cadastrar:', err);
     alert('Erro ao conectar com o servidor.');

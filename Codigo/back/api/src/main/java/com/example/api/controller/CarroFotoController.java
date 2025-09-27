@@ -1,4 +1,3 @@
-// CarroFotoController.java
 package com.example.api.controller;
 
 import java.util.List;
@@ -20,7 +19,6 @@ public class CarroFotoController {
 
   private final CarroFotoService service;
 
-  // Upload de imagem para um carro
   @PostMapping(value = "/{id}/fotos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<?> upload(
       @PathVariable Long id,
@@ -29,7 +27,6 @@ public class CarroFotoController {
     try {
       CarroFoto salva = service.upload(id, file, capa);
       return ResponseEntity.status(HttpStatus.CREATED).body(
-          // opcional: retornar só metadados
           new FotoMeta(salva.getId(), salva.getFilename(), salva.getContentType(),
                        salva.getSize(), salva.isCapa())
       );
@@ -38,7 +35,6 @@ public class CarroFotoController {
     }
   }
 
-  // Lista metadados das fotos (sem bytes)
   @GetMapping("/{id}/fotos")
   public List<FotoMeta> listar(@PathVariable Long id) {
     return service.listarMetadados(id).stream()
@@ -46,7 +42,6 @@ public class CarroFotoController {
         .toList();
   }
 
-  // Download dos bytes (Content-Type correto)
   @GetMapping("/fotos/{fotoId}/conteudo")
   public ResponseEntity<byte[]> conteudo(@PathVariable Long fotoId) {
     CarroFoto f = service.buscarConteudo(fotoId);
@@ -56,13 +51,11 @@ public class CarroFotoController {
         .body(f.getData());
   }
 
-  // Apagar
   @DeleteMapping("/fotos/{fotoId}")
   public ResponseEntity<Void> deletar(@PathVariable Long fotoId) {
     service.deletar(fotoId);
     return ResponseEntity.noContent().build();
   }
 
-  // DTO de metadados para respostaa
   record FotoMeta(Long id, String filename, String contentType, long size, boolean capa) {}
 }

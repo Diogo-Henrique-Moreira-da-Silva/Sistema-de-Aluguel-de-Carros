@@ -13,20 +13,20 @@ public class CarroFoto {
   private Long id;
 
   @Column(nullable = false)
-  private String filename;          // nome do arquivo
+  private String filename;          
 
   @Column(nullable = false)
-  private String contentType;       // image/jpeg, image/png, ...
+  private String contentType;      
 
   @Column(nullable = false)
-  private long size;                // em bytes
+  private long size;               
 
   private boolean capa = false;
 
   @Lob
-  @Basic(fetch = FetchType.LAZY)    // evita carregar os bytes sempre
+  @Basic(fetch = FetchType.LAZY)   
   @Column(nullable = false)
-  private byte[] data;              // <-- bytes da imagem (mapeia para bytea)
+  private byte[] data;             
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "carro_id", nullable = false,

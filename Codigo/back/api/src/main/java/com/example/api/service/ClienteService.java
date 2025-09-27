@@ -55,7 +55,6 @@ public class ClienteService {
             cliente.setProfissao(clienteAtualizado.getProfissao());
             cliente.setEmpregador(clienteAtualizado.getEmpregador());
             cliente.setRendimento(clienteAtualizado.getRendimento());
-            // Atualiza a senha só se foi enviada no request
             if (clienteAtualizado.getSenha() != null && !clienteAtualizado.getSenha().isBlank()) {
                 cliente.setSenha(clienteAtualizado.getSenha());
             }
