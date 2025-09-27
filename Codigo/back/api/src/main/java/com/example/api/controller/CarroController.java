@@ -1,31 +1,25 @@
 package com.example.api.controller;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import com.example.api.DTO.CarroCardDTO;
 import com.example.api.DTO.CarroDTO;
 import com.example.api.model.Carro;
 import com.example.api.service.CarroService;
 
 @RestController
 @RequestMapping("/carro")
-@CrossOrigin(origins="*")
+@CrossOrigin(origins = "*")
 public class CarroController {
-    
-    @Autowired
-    private CarroService carroService;
+
+    @Autowired private CarroService carroService;
 
     @PostMapping("/cadastro")
     public ResponseEntity<?> cadastrar(@RequestBody CarroDTO dto){
-        try{
+        try {
             Carro novoCarro = carroService.cadastrarCarro(dto);
             return ResponseEntity.ok(novoCarro);
         } catch (RuntimeException e){
@@ -35,10 +29,10 @@ public class CarroController {
 
     @DeleteMapping("/{placa}")
     public ResponseEntity<?> excluir(@PathVariable String placa){
-        try{
+        try {
             carroService.excluirCarro(placa);
             return ResponseEntity.noContent().build();
-        } catch(RuntimeException e){
+        } catch (RuntimeException e){
             return ResponseEntity.notFound().build();
         }
     }
@@ -47,9 +41,14 @@ public class CarroController {
     public ResponseEntity<?> alugar(@PathVariable String placa){
         try {
             Carro carroAtualizado = carroService.alugar(placa);
-            return ResponseEntity.ok(carroAtualizado); 
-        } catch (RuntimeException e) {
+            return ResponseEntity.ok(carroAtualizado);
+        } catch (RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CarroCardDTO>> listarTodos() {
+        return ResponseEntity.ok(carroService.listarTodos());
     }
 }

@@ -1,4 +1,3 @@
-// CarroFotoService.java
 package com.example.api.service;
 
 import java.io.IOException;
@@ -41,9 +40,8 @@ public class CarroFotoService {
     foto.setContentType(file.getContentType());
     foto.setSize(file.getSize());
     foto.setCapa(capa);
-    foto.setData(file.getBytes()); // <-- AQUI: grava os bytes no banco
+    foto.setData(file.getBytes()); 
 
-    // Se marcou capa, você pode desmarcar outras:
     if (capa) {
       List<CarroFoto> existentes = fotoRepository.findByCarro_Id(carroId);
       for (CarroFoto f : existentes) f.setCapa(false);
@@ -55,7 +53,6 @@ public class CarroFotoService {
 
   @Transactional(readOnly = true)
   public List<CarroFoto> listarMetadados(Long carroId) {
-    // Evite retornar .getData() aqui; só metadados
     return fotoRepository.findByCarro_Id(carroId);
   }
 

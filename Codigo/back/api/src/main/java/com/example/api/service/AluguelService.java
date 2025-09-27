@@ -1,5 +1,7 @@
 package com.example.api.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -58,4 +60,10 @@ public class AluguelService {
 
         return aluguelRepository.save(reprovada);        
     }
+
+    public List<Aluguel> listarPendentes(Long proprietarioId) {
+    return aluguelRepository
+        .findByProprietario_IdAndStatusOrderByIdDesc(proprietarioId, "EM ABERTO");
+}
+
 }

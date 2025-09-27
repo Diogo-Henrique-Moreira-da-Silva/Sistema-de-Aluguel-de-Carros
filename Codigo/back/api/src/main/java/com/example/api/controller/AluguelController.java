@@ -1,52 +1,46 @@
 package com.example.api.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.net.URI;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.api.DTO.AluguelDTO;
 import com.example.api.model.Aluguel;
 import com.example.api.service.AluguelService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/aluguel")
-@CrossOrigin(origins ="*")
+@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class AluguelController {
-    
-    @Autowired
-    private AluguelService aluguelService;
+
+    private final AluguelService aluguelService;
 
     @PostMapping("/solicitar")
-    public ResponseEntity<?> solicitar(@RequestBody AluguelDTO dto){
-        try {
-            Aluguel solicitacao = aluguelService.solicitar(dto);
-            return ResponseEntity.ok(solicitacao);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<Aluguel> solicitar(@RequestBody AluguelDTO dto) {
+        Aluguel solicitacao = aluguelService.solicitar(dto);
+        return ResponseEntity
+                .created(URI.create("/aluguel/" + solicitacao.getId()))
+                .body(solicitacao); 
+    }
+    @GetMapping("/proprietario/{proprietarioId}/pendentes")
+public ResponseEntity<List<Aluguel>> listarPendentes(@PathVariable Long proprietarioId) {
+    return ResponseEntity.ok(aluguelService.listarPendentes(proprietarioId));
+}
+
+    @PutMapping("/aprovar/{id}")
+    public ResponseEntity<Aluguel> aprovar(@PathVariable Long id) {
+        Aluguel aprovado = aluguelService.aprovar(id);
+        return ResponseEntity.ok(aprovado);
     }
 
-    @PostMapping("/aprovar/{id}")
-    public ResponseEntity<?> aprovar(@RequestBody Long id){
-        try {
-            Aluguel aprovar = aluguelService.aprovar(id);
-            return ResponseEntity.ok(aprovar);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/rejeitar/{id}")
-    public ResponseEntity<?> reprovar(@RequestBody Long id){
-        try {
-            Aluguel rejeitar = aluguelService.rejeitar(id);
-            return ResponseEntity.ok(rejeitar);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    @PutMapping("/rejeitar/{id}")
+    public ResponseEntity<Aluguel> rejeitar(@PathVariable Long id) {
+        Aluguel rejeitado = aluguelService.rejeitar(id);
+        return ResponseEntity.ok(rejeitado);
     }
 }
