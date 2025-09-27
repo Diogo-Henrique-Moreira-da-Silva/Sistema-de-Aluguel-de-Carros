@@ -1,94 +1,91 @@
+// Solicitações.js
 (function () {
+  // ---------- helpers básicos ----------
   const $ = (s, r = document) => r.querySelector(s);
+  const fmtBRL = (v) =>
+    v == null ? "—" : Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const parseLocalDate = (s) => (s ? new Date(`${s}T12:00:00`) : null);
+  const diffDaysInclusive = (a, b) => {
+    const A = parseLocalDate(a), B = parseLocalDate(b);
+    if (!A || !B) return null;
+    const ms = B - A;
+    return Math.max(1, Math.ceil(ms / 86400000));
+  };
 
-  function discoverApiBase() {
+  // ---------- descoberta de API (corrigida) ----------
+  async function discoverApiBase() {
     if (window.API_BASE) return String(window.API_BASE).replace(/\/+$/, "");
-
     const { protocol, hostname } = location;
 
-    const sameOriginCandidates = ["/api", "/backend"];
+    // Só considera proxy válido se _ping responder OK
     const trySameOrigin = async (paths) => {
       for (const p of paths) {
         try {
           const res = await fetch(p + "/_ping", { method: "HEAD" });
-          if (res.ok || res.status === 404) return p;
+          if (res.ok) return p; // <- aceita só 2xx
         } catch {}
       }
       return null;
     };
-    const portUrl = `${protocol}//${hostname}:8080`;
 
-    return (async () => {
-      const proxied = await trySameOrigin(sameOriginCandidates);
-      if (proxied) return proxied;
-      return portUrl; 
-    })();
+    const proxied = await trySameOrigin(["/api", "/backend"]);
+    return proxied || `${protocol}//${hostname}:8080`; // fallback Spring Boot local
   }
+
+  // ---------- banner de erro de backend ----------
   const banner = document.createElement("div");
   banner.style.cssText =
-    "position:fixed;inset:auto 16px 16px 16px;z-index:9999;padding:10px 12px;border-radius:10px;background:#7f1d1d;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.35);display:none";
-  banner.textContent = "Não foi possível conectar ao backend. Verifique se a API está online e o CORS está habilitado.";
-  document.body.appendChild(banner);
-  const showBackendDown = (show) => { banner.style.display = show ? "block" : "none"; };
+    "position:fixed;left:16px;right:16px;bottom:16px;z-index:9999;padding:10px 12px;border-radius:10px;background:#7f1d1d;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.35);display:none";
+  banner.textContent =
+    "Não foi possível conectar ao backend. Verifique se a API está online e o CORS está habilitado.";
+  document.addEventListener("DOMContentLoaded", () => document.body.appendChild(banner));
+  const showBackendDown = (show) => (banner.style.display = show ? "block" : "none");
 
-  const tbody     = $("#tbody");
+  // ---------- elementos da página ----------
+  const tbody = $("#tbody");
   const ownerInfo = $("#owner-info");
-  const rowTpl    = $("#row-tpl");
 
-  const ownerId   = Number(localStorage.getItem("userId")); 
+  // ---------- autenticação local ----------
+  const ownerId = Number(localStorage.getItem("userId"));
   const ownerName = localStorage.getItem("userName") || "";
-  const role      = (localStorage.getItem("userRole") || "").toLowerCase();
+  const role = (localStorage.getItem("userRole") || "").toLowerCase();
 
   if (!ownerId || (role !== "empresa" && role !== "banco")) {
     alert("Faça login como Empresa ou Banco para ver as solicitações.");
     location.href = "../Pages/Login.html";
     return;
   }
+  if (ownerInfo) ownerInfo.textContent = `Proprietario: ${ownerName || "(sem nome)"} • ID ${ownerId}`;
 
-  if (ownerInfo) {
-    ownerInfo.textContent = `Proprietário: ${ownerName || "(sem nome)"} • ID ${ownerId}`;
-  }
-
+  // ---------- fetch util ----------
   async function fetchJSON(url, init = {}) {
-    const headers = { Accept: "application/json", ...(init.headers || {}) };
-    const finalInit = { ...init, headers };
-
-    const resp = await fetch(url, finalInit);
-    const ctype = resp.headers.get("content-type") || "";
+    const resp = await fetch(url, {
+      ...init,
+      headers: { Accept: "application/json", ...(init.headers || {}) },
+    });
     const text = await resp.text().catch(() => "");
-
     if (!resp.ok) {
       const hint =
         location.protocol === "https:" && url.startsWith("http://")
-          ? " — possí­vel bloqueio de conteúdo não seguro (mixed content) em HTTPS."
+          ? " — possível bloqueio de conteúdo não seguro (HTTPS)."
           : "";
-      throw new Error((text && text.substring(0, 500)) || `${resp.status} ${resp.statusText}${hint}`);
+      throw new Error((text && text.slice(0, 400)) || `${resp.status} ${resp.statusText}${hint}`);
     }
     if (!text) return null;
-    if (ctype.includes("application/json")) {
-      try { return JSON.parse(text); } catch {}
+    try {
+      return JSON.parse(text);
+    } catch {
+      return null;
     }
-    try { return JSON.parse(text); } catch { return null; }
   }
 
-  const fmtBRL = (v) =>
-    v == null ? "—" : Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-
-  const parseLocalDate = (s) => (s ? new Date(`${s}T12:00:00`) : null);
-  function diffDaysInclusive(a, b) {
-    const A = parseLocalDate(a), B = parseLocalDate(b);
-    if (!A || !B) return null;
-    const ms = B - A;
-    return Math.max(1, Math.ceil(ms / 86400000));
-  }
-
-  (async () => {
-    const apiBaseResolved = await discoverApiBase();
-    const API = typeof apiBaseResolved === "string" ? apiBaseResolved : String(apiBaseResolved || "").replace(/\/+$/, "");
-
+  // ---------- app ----------
+  (async function boot() {
+    const API = await discoverApiBase();
     const EP = {
-      pendentes: (agenteId) => `${API}/reservas/pendentes?agenteId=${agenteId}`,
-      decidir:   (id)       => `${API}/reservas/${id}/status`
+      pendentes: (agenteId) => `${API}/aluguel/proprietario/${agenteId}/pendentes`,
+      aprovar: (id) => `${API}/aluguel/aprovar/${id}`,
+      rejeitar: (id) => `${API}/aluguel/rejeitar/${id}`,
     };
 
     async function loadPendentes() {
@@ -100,36 +97,33 @@
           tbody.innerHTML = `<tr><td colspan="7" class="muted">Nenhuma solicitação pendente.</td></tr>`;
           return;
         }
-
-        if (rowTpl?.content) {
-          tbody.innerHTML = "";
-          const frag = document.createDocumentFragment();
-          list.forEach((s) => {
-            const node = rowFromTemplate(s) ?? htmlRow(s);
-            frag.appendChild(node);
-          });
-          tbody.appendChild(frag);
-        } else {
-          tbody.innerHTML = list.map((s) => rowHTMLString(s)).join("");
-        }
+        tbody.innerHTML = list.map(rowHTML).join("");
       } catch (err) {
-        console.error("Erro ao carregar pendentes:", err);
+        console.error(err);
         showBackendDown(true);
         tbody.innerHTML = `<tr><td colspan="7" class="muted">Erro ao carregar: ${err.message}</td></tr>`;
       }
     }
 
-    function rowHTMLString(solic) {
-      const id          = solic.id;
-      const modelo      = solic.carroModelo ?? "—";
-      const fabricante  = solic.carroFabricante ?? "";
-      const placa       = solic.placa ?? "—";
-      const clienteNome = solic.clienteNome ?? "—";
-      const inicio      = solic.dataInicio ?? "—";
-      const fim         = solic.dataFim ?? "—";
-      const diaria      = fmtBRL(solic.diaria);
-      const total       = fmtBRL(solic.total);
-      const dias        = diffDaysInclusive(solic.dataInicio, solic.dataFim);
+    function rowHTML(s) {
+      // espere que o back retorne algo como:
+      // { id, dias, status, valor, carro:{modelo,fabricante,placa,diaria}, locatario:{id,nome}, dataInicio?, dataFim? }
+      const id = s.id;
+      const carro = s.carro || {};
+      const loc = s.locatario || {};
+      const modelo = carro.modelo ?? "—";
+      const fabricante = carro.fabricante ?? "";
+      const placa = carro.placa ?? "—";
+      const clienteNome = `${loc.nome ?? "—"}${loc.id ? ` (ID ${loc.id})` : ""}`;
+      const diaria = carro.diaria ?? null;
+
+      // se o DTO não enviar inicio/fim, calcula período pelos dias
+      const periodo =
+        s.dataInicio && s.dataFim
+          ? `${s.dataInicio} → ${s.dataFim} · ${diffDaysInclusive(s.dataInicio, s.dataFim) ?? s.dias} dia(s)`
+          : `${s.dias} dia(s)`;
+
+      const total = s.valor ?? (typeof diaria === "number" && typeof s.dias === "number" ? diaria * s.dias : null);
 
       return `
         <tr data-id="${id}">
@@ -140,97 +134,74 @@
           </td>
           <td>${placa}</td>
           <td>${clienteNome}</td>
+          <td>${periodo}</td>
           <td>
-            <div>${inicio} → ${fim}</div>
-            <small class="muted">${dias != null ? `${dias} dia(s)` : "—"}</small>
-          </td>
-          <td>
-            <div><strong>${total}</strong></div>
-            <small class="muted">Diária: ${diaria}</small>
+            <div><strong>${fmtBRL(total)}</strong></div>
+            <small class="muted">Diária: ${fmtBRL(diaria)}</small>
           </td>
           <td class="actions">
-            <button type="button" class="btn btn-aceitar">Aceitar</button>
-            <button type="button" class="btn btn-recusar">Recusar</button>
+            <button type="button" class="btn btn-approve">Aceitar</button>
+            <button type="button" class="btn btn-reject">Recusar</button>
           </td>
         </tr>
       `;
     }
 
-    function htmlRow(solic) {
-      const tpl = document.createElement("template");
-      tpl.innerHTML = rowHTMLString(solic).trim();
-      return tpl.content.firstElementChild;
+    async function aprovar(id) {
+      await fetchJSON(EP.aprovar(id), { method: "PUT" });
+    }
+    async function rejeitar(id) {
+      await fetchJSON(EP.rejeitar(id), { method: "PUT" });
     }
 
-    function rowFromTemplate(solic) {
-      const tpl = rowTpl?.content?.firstElementChild;
-      if (!tpl) return null;
-      const node = tpl.cloneNode(true);
-      node.dataset.id = String(solic.id);
-
-      node.querySelector(".col-idx")?.append(String(solic.id));
-      node.querySelector(".carro-modelo")?.append(solic.carroModelo ?? "—");
-      node.querySelector(".carro-fabricante")?.append(solic.carroFabricante ?? "");
-      node.querySelector(".col-placa")?.append(solic.placa ?? "—");
-      node.querySelector(".col-cliente")?.append(solic.clienteNome ?? "—");
-
-      const dias = diffDaysInclusive(solic.dataInicio, solic.dataFim);
-      node.querySelector(".inicio")?.append(solic.dataInicio ?? "—");
-      node.querySelector(".fim")?.append(solic.dataFim ?? "—");
-      node.querySelector(".dias")?.append(dias != null ? `${dias} dia(s)` : "—");
-
-      node.querySelector(".total")?.append(fmtBRL(solic.total));
-      node.querySelector(".diaria")?.append(`Diária: ${fmtBRL(solic.diaria)}`);
-
-      return node;
-    }
-
-    async function decidir(id, status) {
-      await fetchJSON(EP.decidir(id), {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status })
-      });
-    }
-
+    // ações dos botões
     tbody.addEventListener("click", async (ev) => {
       const btn = ev.target.closest("button");
       if (!btn) return;
       const tr = btn.closest("tr[data-id]");
       if (!tr) return;
-
-      const id = Number(tr.getAttribute("data-id"));
-      const isAceitar = btn.classList.contains("btn-aceitar") || btn.classList.contains("btn-approve");
-      const isRecusar = btn.classList.contains("btn-recusar") || btn.classList.contains("btn-reject");
-      if (!isAceitar && !isRecusar) return;
+      const id = Number(tr.dataset.id);
 
       try {
         showBackendDown(false);
-        if (isAceitar) {
+        if (btn.classList.contains("btn-approve")) {
           if (!confirm(`Aceitar solicitação #${id}?`)) return;
-          await decidir(id, "ACEITA");
-        } else if (isRecusar) {
+          await aprovar(id);
+        } else if (btn.classList.contains("btn-reject")) {
           if (!confirm(`Recusar solicitação #${id}?`)) return;
-          await decidir(id, "RECUSADA");
+          await rejeitar(id);
+        } else {
+          return;
         }
-
+        // remove da lista
         tr.remove();
         if (!tbody.querySelector("tr[data-id]")) {
           tbody.innerHTML = `<tr><td colspan="7" class="muted">Nenhuma solicitação pendente.</td></tr>`;
         }
+        // popup simples
+        const ok = document.createElement("div");
+        ok.textContent = "Solicitação atualizada!";
+        ok.style.cssText =
+          "position:fixed;right:16px;bottom:16px;background:#065f46;color:#fff;padding:10px 12px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:9999";
+        document.body.appendChild(ok);
+        setTimeout(() => ok.remove(), 1800);
       } catch (err) {
-        console.error("Erro ao atualizar status:", err);
+        console.error(err);
         showBackendDown(true);
-        alert("Falha ao atualizar status: " + err.message);
+        alert("Falha ao atualizar: " + err.message);
       }
     });
 
-
-    window.addEventListener("online", loadPendentes);
+    // recarrega em Ctrl/Cmd+R (atualização suave)
     document.addEventListener("keydown", (e) => {
-      if (e.key.toLowerCase() === "r" && (e.ctrlKey || e.metaKey)) setTimeout(loadPendentes, 50);
+      if (e.key.toLowerCase() === "r" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        loadPendentes();
+      }
     });
+    window.addEventListener("online", loadPendentes);
 
+    // start
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", loadPendentes);
     } else {

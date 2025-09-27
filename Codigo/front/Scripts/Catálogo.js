@@ -1,20 +1,18 @@
 (function initCatalog() {
   const API = "http://localhost:8080";
   const EP = {
-    listar: `${API}/carro`,                           
-    fotosList:   (id)     => `${API}/carros/${id}/fotos`,
-    fotoContent: (fotoId) => `${API}/carros/fotos/${fotoId}/conteudo`,
-    criarReserva: `${API}/reservas`                    
+    listar:        `${API}/carro`,
+    fotosList:     (id)     => `${API}/carros/${id}/fotos`,
+    fotoContent:   (fotoId) => `${API}/carros/fotos/${fotoId}/conteudo`,
+    criarReserva:  `${API}/aluguel/solicitar`,
   };
 
   const PLACEHOLDER = "../Assets/fundo-locadora.jpg";
-
   const $ = (s, r = document) => r.querySelector(s);
-
   const reduceMotion =
-    window.matchMedia &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  // ---------- Modal de aluguel ----------
   const overlay    = $(".rent-overlay");
   const modal      = $(".rent-modal");
   const closeBtn   = $(".rent-close");
@@ -33,10 +31,9 @@
   let selectedCar = { id: null, name: "", year: "", model: "", brand: "", price: 0 };
 
   function todayISO() {
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
+    const d = new Date(); d.setHours(0,0,0,0);
     const off = d.getTimezoneOffset();
-    return new Date(d.getTime() - off * 60000).toISOString().slice(0, 10);
+    return new Date(d.getTime() - off * 60000).toISOString().slice(0,10);
   }
   const parseLocalDate = (s) => new Date(`${s}T12:00:00`);
   function diffDaysInclusive(a, b) {
@@ -54,15 +51,11 @@
     const valid = !!(s && e && e >= s);
     if (confirmBtn) confirmBtn.disabled = !valid;
 
-    if (!valid) {
-      if (daysEl)  daysEl.textContent  = "—";
-      if (totalEl) totalEl.textContent = "—";
-      return;
-    }
+    if (!valid) { daysEl.textContent = "—"; totalEl.textContent = "—"; return; }
     const d = diffDaysInclusive(s, e);
     const total = d * (selectedCar.price || 0);
-    if (daysEl)  daysEl.textContent  = String(d);
-    if (totalEl) totalEl.textContent = fmtBRL(total);
+    daysEl.textContent  = String(d);
+    totalEl.textContent = fmtBRL(total);
   }
 
   function openModalFromCard(cardEl) {
@@ -76,26 +69,28 @@
     const model = dd[1]?.textContent?.trim() ?? "";
     const brand = dd[2]?.textContent?.trim() ?? "";
     const price = Number(cardEl.dataset.price || "0") || 0;
-    const id    = cardEl.getAttribute("data-id");
+    const id    = Number(cardEl.getAttribute("data-id"));
 
     selectedCar = { id, name: title, year, model, brand, price };
 
-    if (carNameEl) carNameEl.textContent = `${title} • ${model}${year ? ` (${year})` : ""}`;
-    if (dailyEl)   dailyEl.textContent   = fmtBRL(price);
+    carNameEl.textContent = `${title} • ${model}${year ? ` (${year})` : ""}`;
+    dailyEl.textContent   = fmtBRL(price);
 
     const min = todayISO();
-    if (startInput) { startInput.min = min; startInput.value = ""; }
-    if (endInput)   { endInput.min   = min; endInput.value   = ""; }
+    startInput.min = min; startInput.value = "";
+    endInput.min   = min; endInput.value   = "";
 
     updateSummary();
 
     overlay.hidden = false;
     modal.hidden   = false;
-    setTimeout(() => startInput?.focus(), 0);
+    setTimeout(() => startInput.focus(), 0);
 
     document.addEventListener("keydown", onEsc, true);
     document.addEventListener("focus", trapFocus, true);
   }
+  // expõe função para os cards chamarem
+  window.openRentModal = openModalFromCard;
 
   function closeModal() {
     overlay.hidden = true;
@@ -104,7 +99,6 @@
     document.removeEventListener("focus", trapFocus, true);
     if (lastFocused?.focus) lastFocused.focus();
   }
-
   function onEsc(e) { if (e.key === "Escape") { e.preventDefault(); closeModal(); } }
   function trapFocus(e) {
     if (modal.hidden) return;
@@ -118,62 +112,50 @@
   startInput?.addEventListener("input", () => {
     if (endInput && startInput.value) {
       endInput.min = startInput.value;
-      if (endInput.value && endInput.value < startInput.value) {
-        endInput.value = startInput.value;
-      }
+      if (endInput.value && endInput.value < startInput.value) endInput.value = startInput.value;
     }
     updateSummary();
   });
   endInput?.addEventListener("input", updateSummary);
 
+  // Envio ao backend: POST /aluguel/solicitar com { carroId, locatarioId, dias }
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
+
     const s  = startInput?.value;
     const e2 = endInput?.value;
     if (!s || !e2) return alert("Selecione as datas de retirada e devolução.");
     if (e2 < s)    return alert("A devolução não pode ser antes da retirada.");
 
-    const clienteId = Number(localStorage.getItem("userId")); 
-    if (!clienteId) return alert("Faça login para reservar.");
+    const locatarioId = Number(localStorage.getItem("userId"));
+    if (!locatarioId) return alert("Faça login para reservar.");
 
-    const dias  = diffDaysInclusive(s, e2);
-    const total = dias * (selectedCar.price || 0);
-
-    const payload = {
-      clienteId,
-      carroId: Number(selectedCar.id),
-      dataInicio: s, 
-      dataFim:    e2,
-      diaria:     selectedCar.price,
-      total,
-      status:     "PENDENTE"
-    };
+    const dias = diffDaysInclusive(s, e2);
+    const dto = { carroId: Number(selectedCar.id), locatarioId, dias };
 
     try {
       const r = await fetch(EP.criarReserva, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(dto),
       });
       if (!r.ok) throw new Error(`${r.status} ${r.statusText}: ${await r.text()}`);
+      alert('Solicitação enviada com sucesso! Aguarde a aprovação do proprietário.');
 
       closeModal();
-      window.location.href = "/Pages/solicitacoes.html";
     } catch (err) {
       console.error(err);
-      alert("Falha ao criar a reserva. Tente novamente.");
+      alert("Falha ao criar a solicitação. Verifique seu login e tente novamente.");
     }
   });
 
-  window.openRentModal = openModalFromCard;
-
+  // ---------- Cards ----------
   const container = $("#cards") || document;
   const bound = new WeakSet();
 
   function makeCard(car) {
     const daily = typeof car.diaria === "number" ? car.diaria : null;
     const priceText = daily != null ? `${fmtBRL(daily)}/dia` : "";
-
     return `
       <article class="card" role="link" tabindex="0"
                data-id="${car.id ?? ""}" data-price="${daily ?? ""}" data-href="#">
@@ -184,18 +166,13 @@
                alt="${car.fabricante} ${car.modelo}"
                loading="lazy"
                onerror="this.onerror=null;this.src='${PLACEHOLDER}'" />
-          <header>
-            <h2 class="title">${car.fabricante} ${car.modelo}</h2>
-          </header>
-
+          <header><h2 class="title">${car.fabricante} ${car.modelo}</h2></header>
           <dl class="specs">
             <div><dt>Ano</dt><dd>${car.ano ?? ""}</dd></div>
             <div><dt>Modelo</dt><dd>${car.modelo}</dd></div>
             <div><dt>Marca</dt><dd>${car.fabricante}</dd></div>
           </dl>
-
           ${priceText ? `<p class="price">${priceText}</p>` : ""}
-
           <a class="cta" href="#" aria-label="Alugar ${car.fabricante} ${car.modelo}">Alugar</a>
         </div>
       </article>
@@ -203,9 +180,7 @@
   }
 
   function bindCard(card) {
-    if (!card || bound.has(card)) return;
-    bound.add(card);
-
+    if (!card || bound.has(card)) return; bound.add(card);
     const glow = card.querySelector(".glow");
     const content = card.querySelector(".card-content");
 
@@ -214,7 +189,6 @@
       const href = card.getAttribute("data-href");
       if (href && href !== "#") window.open(href, "_blank", "noopener,noreferrer");
     });
-
     card.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
@@ -223,9 +197,7 @@
       }
     });
     card.querySelector(".cta")?.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      openModalFromCard(card);
+      e.preventDefault(); e.stopPropagation(); openModalFromCard(card);
     });
 
     if (!reduceMotion) {
@@ -237,12 +209,9 @@
         const clientY = ev.clientY ?? t?.clientY;
         if (clientX == null || clientY == null) return;
 
-        const x = clientX - rect.left;
-        const y = clientY - rect.top;
-        const cx = rect.width / 2;
-        const cy = rect.height / 2;
-        const px = (x - cx) / cx;
-        const py = -((y - cy) / cy);
+        const x = clientX - rect.left, y = clientY - rect.top;
+        const cx = rect.width / 2, cy = rect.height / 2;
+        const px = (x - cx) / cx, py = -((y - cy) / cy);
 
         if (rafId) cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(() => {
@@ -294,14 +263,14 @@
   function normalizeFromBackend(it) {
     if ("modelo" in it && "fabricante" in it) {
       return {
-        id: it.id ?? null, 
+        id: it.id ?? null,
         placa: it.placa ?? "—",
         modelo: it.modelo ?? "—",
         fabricante: it.fabricante ?? "—",
         diaria: typeof it.diaria === "number" ? it.diaria : null,
         status: it.status ?? "Disponivel",
         proprietarioNome: it.proprietarioNome ?? "—",
-        imagemUrl: null, 
+        imagemUrl: null,
       };
     }
     return {
@@ -328,8 +297,9 @@
 
       render(cars);
 
+      // carrega fotos de capa
       for (const car of cars) {
-        if (!car.id) continue; 
+        if (!car.id) continue;
         try {
           const metas = await fetchJSON(EP.fotosList(car.id));
           const capa  = (metas || []).find((f) => f.capa) || (metas || [])[0];
@@ -338,8 +308,7 @@
           car.imagemUrl = EP.fotoContent(capa.id);
           const img = container.querySelector(`.card[data-id="${car.id}"] img.thumb`);
           if (img) img.src = car.imagemUrl;
-        } catch {
-        }
+        } catch {/* ignora erro por carro */}
       }
     } catch (err) {
       console.error(err);
