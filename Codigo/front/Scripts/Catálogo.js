@@ -1,5 +1,5 @@
 (function initCatalog() {
-  const API = "http://localhost:8080";
+  const API = "https://sistema-de-aluguel-de-carros-l02h.onrender.com";
   const EP = {
     listar:        `${API}/carro`,
     fotosList:     (id)     => `${API}/carros/${id}/fotos`,

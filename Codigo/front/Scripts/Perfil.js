@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8080";
+const API_BASE = "https://sistema-de-aluguel-de-carros-l02h.onrender.com";
 const EP = {
   get: (id) => `${API_BASE}/clientes/${id}`,
   put: (id) => `${API_BASE}/clientes/${id}`,
@@ -79,7 +79,7 @@ function fillForm(cli) {
 
 if (!userId || userRole !== "cliente") {
   alert("Faça login como cliente para acessar o perfil.");
-  window.location.href = "../Pages/Login.html";
+  window.location.href = "../Index.html";
 }
 
 async function fetchJSON(url, opts) {
@@ -168,7 +168,7 @@ async function doDelete() {
     showToast("Conta excluída. Redirecionando...");
     setTimeout(() => {
       localStorage.clear();
-      window.location.href = "../Pages/Login.html";
+      window.location.href = "../Index.html";
     }, 1200);
   } catch (e) {
     console.error(e);
@@ -177,7 +177,7 @@ async function doDelete() {
 }
 btnLogout?.addEventListener("click", () => {
   localStorage.clear();
-  window.location.href = "../Pages/Login.html";
+  window.location.href = "../Index.html";
 });
 
 carregarPerfil();

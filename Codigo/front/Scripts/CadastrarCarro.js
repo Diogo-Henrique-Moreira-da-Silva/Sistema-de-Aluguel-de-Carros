@@ -1,6 +1,4 @@
-// CadastrarCarro.js — versão com filtro por proprietário, status correto e solicitações
-
-const API = 'http://127.0.0.1:8080';
+const API = 'https://sistema-de-aluguel-de-carros-l02h.onrender.com';
 
 const EP = {
   criar:        `${API}/carro/cadastro`,
@@ -14,7 +12,6 @@ const EP = {
   rejeitar:     (aluguelId) => `${API}/aluguel/rejeitar/${aluguelId}`
 };
 
-// ---------- utils ----------
 const $  = (sel, root=document) => root.querySelector(sel);
 const $$ = (sel, root=document) => [...root.querySelectorAll(sel)];
 
@@ -48,13 +45,13 @@ function statusChip(status) {
 // ---------- elementos ----------
 const cardsEl   = $('#cards');
 const overlay   = $('#overlay');
-const carModal  = $('#carModal');       // modal de cadastro de carro (já existente na sua página)
+const carModal  = $('#carModal');       // modal de cadastro de carro 
 const form      = $('#carForm');
 const btnAdd    = $('#btnAdd');
 const btnClose  = $('#btnClose');
 const btnCancel = $('#btnCancel');
 
-// modal de solicitações — criaremos sob demanda
+// modal de solicitações 
 let solicitacoesDialog = null;
 
 // ---------- estado ----------
@@ -63,7 +60,6 @@ let pendentesByCarId = new Map();   // Map<carroId, Array<AluguelResumoDTO>>
 
 // ---------- normalização ----------
 function mapFromDTO(x) {
-  // /carro deve enviar status real e o proprietário (id) do carro
   return {
     id: x.id ?? null,
     placa: (x.placa ?? '').toUpperCase(),
@@ -158,6 +154,7 @@ async function loadPendentes() {
     pendentesByCarId = new Map();
   }
 }
+
 
 // ---------- criação / exclusão ----------
 async function cadastrar(dto) {

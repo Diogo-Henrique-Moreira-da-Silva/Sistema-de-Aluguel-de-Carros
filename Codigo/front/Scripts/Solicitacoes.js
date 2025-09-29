@@ -1,4 +1,3 @@
-// Solicitações.js
 (function () {
   // ---------- helpers básicos ----------
   const $ = (s, r = document) => r.querySelector(s);

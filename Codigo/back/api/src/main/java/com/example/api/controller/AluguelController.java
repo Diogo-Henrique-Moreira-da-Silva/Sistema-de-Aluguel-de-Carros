@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.api.DTO.AluguelDTO;
+
 import com.example.api.DTO.AluguelResumoDTO;
 import com.example.api.DTO.AluguelSolicitacaoDTO;
 import com.example.api.model.Aluguel;

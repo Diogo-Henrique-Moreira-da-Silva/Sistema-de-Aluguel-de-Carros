@@ -67,9 +67,9 @@ function setupRoleTabs(scopeEl) {
 setupRoleTabs(document.querySelector('.form-box.login'));
 setupRoleTabs(document.querySelector('.form-box.register'));
 
-const API_CLIENTES = 'http://localhost:8080/clientes';
-const API_EMPRESAS = 'http://localhost:8080/agentes/empresa';
-const API_BANCOS   = 'http://localhost:8080/agentes/banco';
+const API_CLIENTES = 'https://sistema-de-aluguel-de-carros-l02h.onrender.com/clientes';
+const API_EMPRESAS = 'https://sistema-de-aluguel-de-carros-l02h.onrender.com/agentes/empresa';
+const API_BANCOS   = 'https://sistema-de-aluguel-de-carros-l02h.onrender.com/agentes/banco';
 
 async function postJson(url, body) {
   const resp = await fetch(url, {
@@ -115,7 +115,7 @@ document.querySelector('.form-box.login form')?.addEventListener('submit', async
     alert('Login realizado com sucesso!');
     closeModal();
 
-    const target = (role === 'empresa') ? 'CadastrarCarro.html' : 'Login.html';
+    const target = (role === 'empresa') ? 'CadastrarCarro.html' : 'Catálogo.html';
     window.location.assign(target);
 
   } catch (err) {
