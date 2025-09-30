@@ -115,7 +115,7 @@ document.querySelector('.form-box.login form')?.addEventListener('submit', async
     alert('Login realizado com sucesso!');
     closeModal();
 
-    const target = (role === 'empresa') ? 'CadastrarCarro.html' : 'Catálogo.html';
+    const target = (role === 'empresa') ? '../Pages/CadastrarCarro.html' : '../Pages/Catálogo.html';
     window.location.assign(target);
 
   } catch (err) {
